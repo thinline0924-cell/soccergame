@@ -71,7 +71,15 @@ export function newGame() {
     lastMatch: null,
     trial: null,
     ending: null,
-    stats: { opsDone: 0, killed: 0, bribes: 0 },
+    stats: { opsDone: 0, killed: 0, bribes: 0, cases: 0 },
+    // 案件システム
+    desk: [],            // 今週届いている案件 [{...caseInstance}]
+    resolvedThisWeek: [], // 今週すでに処理した案件id
+    threads: {},         // 連続した筋の進行 {threadId:{step,active,...}}
+    scheduled: [],       // 先々で発火する案件 [{caseId, week, ctx}]
+    seenCases: {},       // 一度きりの案件の既出フラグ
+    aftermath: [],       // 試合後に見せる「何が変わったか」
+    tutorial: 0,         // 導入の進行(0=未開始)
   };
   S.uid = uid + 10;
   assignReferees();
@@ -82,7 +90,7 @@ export function newGame() {
 }
 
 export function newMods() {
-  return { refCalls: 0, refBy: null, oppWeak: 0, oppWeakNames: [], fixed: false, bet: 0, rivalRef: false, guard: false };
+  return { refCalls: 0, refBy: null, oppWeak: 0, oppWeakNames: [], fixed: false, bet: 0, rivalRef: false, guard: false, briberRef: null, promisedPlayer: null };
 }
 
 export function nextId(p) { S.uid++; return p + S.uid; }

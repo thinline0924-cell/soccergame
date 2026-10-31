@@ -42,29 +42,26 @@
   <div class="wrap"><div class="setup" id="setup-root"></div></div>
 </section>
 
-<!-- オフィス(表) -->
+<!-- デスク(案件) -->
 <section class="screen" id="s-office">
   <div class="wrap">
-    <div class="panel"><div class="ph"><span>次節</span><span>CLUBHOUSE</span></div><div class="pb" id="off-next"></div></div>
-    <div class="grid3">
-      <div class="panel"><div class="ph"><span>順位表</span><span>SERIE SECONDA</span></div><div class="pb" id="off-table"></div></div>
-      <div class="panel"><div class="ph"><span>財政</span><span>FINANCE</span></div><div class="pb" id="off-money"></div></div>
-      <div class="panel" style="align-self:start"><div class="ph"><span>評判</span><span>REPUTATION</span></div><div class="pb"><div class="board" id="off-board">クラブの表の顔。工作の結果は、やがてここに出る。</div></div></div>
+    <div class="desk-objective" id="desk-objective"></div>
+    <div class="desk-tools">
+      <button id="tool-table"><kbd>T</kbd>順位表</button>
+      <button id="tool-money">財政</button>
+      <button id="tool-file"><kbd>F</kbd>手駒と追及</button>
+      <button id="tool-squad">選手</button>
     </div>
-    <div class="ticker" id="off-ticker"><div class="tag">NEWS</div><div class="run"></div></div>
+    <div class="desk-cards" id="desk-cards"></div>
   </div>
   <div class="actionbar">
     <div class="wrap">
-      <button class="abtn" id="act-squad"><kbd>1</kbd>選手</button>
-      <button class="abtn" id="act-transfer"><kbd>2</kbd>移籍</button>
-      <button class="abtn" id="act-tactic"><kbd>3</kbd>方針</button>
-      <button class="abtn file" id="act-file"><kbd>F</kbd>ファイル</button>
-      <button class="abtn go" id="act-advance"><kbd>SPACE</kbd>週を進める</button>
+      <button class="abtn go wide" id="desk-advance"></button>
     </div>
   </div>
 </section>
 
-<!-- ファイル(裏) -->
+<!-- ファイル(裏・参照) -->
 <section class="screen" id="s-file">
   <div class="wrap">
     <article class="file">
@@ -77,12 +74,8 @@
           <section><div class="sec"><b>手駒</b>Personnel</div><div id="file-roster"></div></section>
           <section><div class="sec"><b>追及</b>Pursuers</div><div class="pursuer" id="file-pursuers"></div></section>
         </div>
-        <section><div class="sec"><b>進行中の工作</b>Operations</div><div class="ops-list" id="file-ops"></div></section>
         <div class="file-actions">
-          <button class="fbtn red" id="file-new">新しい工作を命じる</button>
-          <button class="fbtn" id="file-hire">手駒を雇う</button>
-          <button class="fbtn" id="file-money">裏金を動かす</button>
-          <button class="fbtn back" id="file-back">表に戻る</button>
+          <button class="fbtn back" id="file-back">デスクに戻る</button>
         </div>
       </div>
     </article>

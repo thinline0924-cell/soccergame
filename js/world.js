@@ -1,16 +1,12 @@
 // 週送りの全体処理:工作の解決 → 試合 → 週末処理 → 新聞
 import { S, rand, rint, clamp, club, myClub, fixtureFor, refFor, newMods, addNews, opName, save, sortedTable } from './state.js';
-import { resolveOps } from './ops.js';
 import { advancePursuit, checkOwnerSafety, checkBankrupt, checkSeasonEnd, recomputePts } from './pursuit.js';
 
-// 週の前半:工作の解決(試合の前)
+// 週の前半(試合直前):握った弱みで審判が自動で傾くなど
 export function preMatch() {
-  // 主審が弱みを握られている(owned)なら、自動で判定を一回傾けられる
   const rf = refFor(S.week);
   if (rf && rf.owned > 0 && S.mods.refCalls === 0) { S.mods.refCalls = 1; S.mods.refBy = rf.name; rf.owned--; }
-  const reports = resolveOps();
-  S.reports = reports;
-  return reports;
+  return [];
 }
 
 // 週の後半:試合後の処理
@@ -63,6 +59,7 @@ export function postMatch() {
 
   // 新聞
   S.paper = makePaper();
+  S.aftermath = buildAftermath();
 
   // 次の週へ
   S.mods = newMods();
@@ -72,6 +69,20 @@ export function postMatch() {
   }
   save();
   return events;
+}
+
+function buildAftermath() {
+  // 「何が変わったか」:試合結果と、仕込みがどう効いたか
+  const lm = S.lastMatch;
+  const out = [];
+  if (lm) {
+    const res = lm.myGoals > lm.oppGoals ? '勝利' : lm.myGoals < lm.oppGoals ? '敗戦' : '引き分け';
+    out.push({ head: `試合 ${lm.myGoals}–${lm.oppGoals}`, text: `${club(lm.opp).ja}戦は${res}。` });
+    for (const pl of (lm.planted || [])) out.push({ head: '仕込み', text: `${pl.t} ―― ${pl.d}` });
+  }
+  const d = S.money.lastDelta;
+  if (d) out.push({ head: '収支', text: `入場料 ${d.gate >= 0 ? '+' : ''}${d.gate} ・ 給料 −${d.wages} ・ 差引 ${d.delta >= 0 ? '+' : ''}${d.delta}(千€)` });
+  return out;
 }
 
 function makePaper() {
