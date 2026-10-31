@@ -1,0 +1,11 @@
+# Render Blueprint ― 静的サイトとして公開するための設定
+services:
+  - type: web
+    name: offside
+    runtime: static
+    buildCommand: echo "ビルドは不要です"
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache

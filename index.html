@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OFFSIDE</title>
+<meta name="description" content="架空のサッカークラブのオーナーとなり、あらゆる手を使って頂点を目指す経営ノワール。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 常設トップバー(タイトル以外で表示) -->
+<header class="topbar hidden" id="topbar">
+  <div class="wrap">
+    <div class="logo"><i></i>OFFSIDE</div>
+    <div class="wk">WEEK <b>01</b> / 14</div>
+    <div class="sp"></div>
+    <div class="res"></div>
+  </div>
+</header>
+
+<!-- タイトル -->
+<section class="screen on" id="s-title">
+  <div class="wrap" style="max-width:560px">
+    <div class="big"><span class="flag"></span>OFFSIDE</div>
+    <div class="tag">V E S C A R A ・ S E R I E ・ S E C O N D A</div>
+    <p class="lede">二部の没落クラブ、US ヴェラルド。正攻法で上がれる戦力はない。審判を買い、相手を削り、追う者を黙らせ ―― 捕まる前に、頂点へ。</p>
+    <div class="menu">
+      <button id="btn-new">新しく始める <small>NEW GAME</small></button>
+      <button id="btn-continue">続きから <small>CONTINUE</small></button>
+      <button id="btn-howto">遊び方 <small>HOW TO PLAY</small></button>
+      <button id="btn-settings">設定 <small>SETTINGS</small></button>
+    </div>
+  </div>
+</section>
+
+<!-- 開始設定 -->
+<section class="screen" id="s-setup">
+  <div class="wrap"><div class="setup" id="setup-root"></div></div>
+</section>
+
+<!-- オフィス(表) -->
+<section class="screen" id="s-office">
+  <div class="wrap">
+    <div class="panel"><div class="ph"><span>次節</span><span>CLUBHOUSE</span></div><div class="pb" id="off-next"></div></div>
+    <div class="grid3">
+      <div class="panel"><div class="ph"><span>順位表</span><span>SERIE SECONDA</span></div><div class="pb" id="off-table"></div></div>
+      <div class="panel"><div class="ph"><span>財政</span><span>FINANCE</span></div><div class="pb" id="off-money"></div></div>
+      <div class="panel" style="align-self:start"><div class="ph"><span>評判</span><span>REPUTATION</span></div><div class="pb"><div class="board" id="off-board">クラブの表の顔。工作の結果は、やがてここに出る。</div></div></div>
+    </div>
+    <div class="ticker" id="off-ticker"><div class="tag">NEWS</div><div class="run"></div></div>
+  </div>
+  <div class="actionbar">
+    <div class="wrap">
+      <button class="abtn" id="act-squad"><kbd>1</kbd>選手</button>
+      <button class="abtn" id="act-transfer"><kbd>2</kbd>移籍</button>
+      <button class="abtn" id="act-tactic"><kbd>3</kbd>方針</button>
+      <button class="abtn file" id="act-file"><kbd>F</kbd>ファイル</button>
+      <button class="abtn go" id="act-advance"><kbd>SPACE</kbd>週を進める</button>
+    </div>
+  </div>
+</section>
+
+<!-- ファイル(裏) -->
+<section class="screen" id="s-file">
+  <div class="wrap">
+    <article class="file">
+      <div class="file-in">
+        <div class="file-head">
+          <div><div class="ttl" id="file-title">案件綴</div><div class="meta" id="file-meta"></div></div>
+          <div class="stamp" id="file-stamp">極秘</div>
+        </div>
+        <div class="cols">
+          <section><div class="sec"><b>手駒</b>Personnel</div><div id="file-roster"></div></section>
+          <section><div class="sec"><b>追及</b>Pursuers</div><div class="pursuer" id="file-pursuers"></div></section>
+        </div>
+        <section><div class="sec"><b>進行中の工作</b>Operations</div><div class="ops-list" id="file-ops"></div></section>
+        <div class="file-actions">
+          <button class="fbtn red" id="file-new">新しい工作を命じる</button>
+          <button class="fbtn" id="file-hire">手駒を雇う</button>
+          <button class="fbtn" id="file-money">裏金を動かす</button>
+          <button class="fbtn back" id="file-back">表に戻る</button>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- 試合 -->
+<section class="screen" id="s-match">
+  <div class="wrap"><div id="match-root"></div></div>
+</section>
+
+<!-- 新聞 -->
+<section class="screen" id="s-news">
+  <div class="wrap" style="max-width:720px"><div id="news-root"></div></div>
+</section>
+
+<!-- 終幕 -->
+<section class="screen" id="s-end">
+  <div class="wrap" style="max-width:560px"><div id="end-root"></div></div>
+</section>
+
+<script type="module" src="js/main.js"></script>
+<script>
+  // タイトル以外ではトップバーを出す
+  const bar = document.getElementById('topbar');
+  const obs = new MutationObserver(() => {
+    const t = document.getElementById('s-title');
+    const setup = document.getElementById('s-setup');
+    bar.classList.toggle('hidden', (t && t.classList.contains('on')) || (setup && setup.classList.contains('on')));
+  });
+  document.querySelectorAll('.screen').forEach((s) => obs.observe(s, { attributes: true, attributeFilter: ['class'] }));
+</script>
+</body>
+</html>
