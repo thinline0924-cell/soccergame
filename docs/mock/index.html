@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OFFSIDE UIモック</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap">
+<style>
+/* Layout: three stacked "screens", each a full-bleed frame. Broadcast (表) = lacquer black + vermilion; File (裏) = unbleached paper + ink + seal red. */
+:root{
+  --ink:#0E0F11;       /* broadcast ground */
+  --ink-2:#16181B;
+  --ink-3:#22252A;
+  --rule:#2E3238;
+  --chalk:#ECEAE4;     /* broadcast text */
+  --chalk-2:#9C9A94;
+  --vermil:#D0342C;    /* broadcast accent */
+  --paper:#E6DFCF;     /* dossier ground */
+  --paper-2:#D9D0BC;
+  --sumi:#1B1A17;      /* dossier ink */
+  --sumi-2:#5B5648;
+  --seal:#A8241C;      /* stamp */
+  --warn:#C9A227;
+  --f-cond:"Barlow Condensed","Arial Narrow",sans-serif;
+  --f-sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-min:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--ink);color:var(--chalk);font-family:var(--f-sans);font-weight:400;margin:0}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px;display:grid;gap:44px}
+
+/* page masthead */
+.mast{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:14px}
+.logo{font-family:var(--f-cond);font-weight:700;font-size:44px;letter-spacing:.02em;line-height:.9;display:flex;align-items:center;gap:0}
+.logo .flag{display:inline-block;width:6px;height:36px;background:var(--vermil);margin-right:12px;transform:skewX(-12deg)}
+.mast small{font-family:var(--f-mono);font-size:11px;color:var(--chalk-2);letter-spacing:.08em}
+
+.label{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--chalk-2);text-transform:uppercase;display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.label b{color:var(--chalk);font-weight:500}
+.label::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+/* ===== SCREEN 1: CLUBHOUSE (broadcast) ===== */
+.bc{background:var(--ink-2);border:1px solid var(--rule);overflow:hidden}
+.bc-top{display:grid;grid-template-columns:auto 1fr auto;align-items:stretch;border-bottom:1px solid var(--rule)}
+.crest{background:var(--vermil);color:#fff;font-family:var(--f-cond);font-weight:700;font-size:22px;padding:10px 18px;display:flex;align-items:center;letter-spacing:.04em;clip-path:polygon(0 0,100% 0,calc(100% - 14px) 100%,0 100%);padding-right:30px}
+.club{padding:10px 18px;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.club .n{font-family:var(--f-cond);font-weight:600;font-size:22px;letter-spacing:.06em;line-height:1}
+.club .s{font-size:12px;color:var(--chalk-2);margin-top:3px}
+.wk{display:flex;align-items:center;gap:18px;padding:0 18px;font-family:var(--f-cond);font-size:15px;letter-spacing:.08em;color:var(--chalk-2)}
+.wk strong{font-size:30px;color:var(--chalk);font-weight:600;font-variant-numeric:tabular-nums}
+
+.bc-grid{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:1px;background:var(--rule)}
+.bc-grid > section{background:var(--ink-2);padding:18px 20px;min-width:0}
+.h{font-family:var(--f-cond);font-weight:600;font-size:13px;letter-spacing:.18em;color:var(--chalk-2);text-transform:uppercase;display:flex;justify-content:space-between;margin-bottom:12px}
+.h span:last-child{color:var(--chalk-2);font-weight:400}
+
+.next{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:8px 0 16px;border-bottom:1px solid var(--rule)}
+.next .t{font-family:var(--f-cond);font-weight:700;font-size:34px;letter-spacing:.02em;line-height:1}
+.next .t.r{text-align:right}
+.next .t small{display:block;font-size:12px;font-family:var(--f-sans);font-weight:400;color:var(--chalk-2);letter-spacing:0;margin-top:6px}
+.next .vs{font-family:var(--f-mono);font-size:12px;color:var(--chalk-2);border:1px solid var(--rule);padding:6px 8px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.facts div{display:grid;gap:4px}
+.facts dt{font-size:11px;color:var(--chalk-2)}
+.facts dd{margin:0;font-family:var(--f-cond);font-size:20px;font-weight:500;font-variant-numeric:tabular-nums}
+.facts dd.hot{color:var(--vermil)}
+
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.tbl td,.tbl th{padding:6px 4px;font-size:13px;text-align:right;border-bottom:1px solid var(--rule)}
+.tbl th{font-family:var(--f-cond);font-weight:500;letter-spacing:.12em;color:var(--chalk-2);font-size:11px}
+.tbl td:nth-child(1),.tbl th:nth-child(1){text-align:left;width:22px;color:var(--chalk-2);font-family:var(--f-cond)}
+.tbl td:nth-child(2),.tbl th:nth-child(2){text-align:left;font-family:var(--f-cond);font-size:15px;letter-spacing:.04em}
+.tbl tr.me td{background:var(--ink-3);color:var(--chalk)}
+.tbl tr.me td:nth-child(1){box-shadow:inset 3px 0 0 var(--vermil);color:var(--chalk)}
+.tbl tr.cut td{border-bottom:1px dashed var(--chalk-2)}
+
+.money{display:grid;gap:14px}
+.money .row{display:grid;grid-template-columns:1fr auto;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:10px}
+.money .k{font-size:12px;color:var(--chalk-2)}
+.money .v{font-family:var(--f-cond);font-size:28px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.money .v.neg{color:var(--vermil)}
+.money .v small{font-size:13px;color:var(--chalk-2);font-weight:400;margin-left:6px}
+.spark{height:44px;width:100%;display:block}
+.board{font-size:12px;color:var(--chalk-2);line-height:1.7}
+.board b{color:var(--chalk);font-weight:500}
+
+.ticker{display:flex;border-top:1px solid var(--rule);background:var(--ink);overflow:hidden;font-size:13px}
+.ticker .tag{background:var(--chalk);color:var(--ink);font-family:var(--f-cond);font-weight:700;letter-spacing:.12em;padding:8px 14px;flex:none}
+.ticker .run{white-space:nowrap;padding:8px 0;display:flex;gap:48px;animation:crawl 38s linear infinite}
+.ticker .run span::before{content:"";display:inline-block;width:6px;height:6px;background:var(--vermil);margin-right:10px;vertical-align:middle}
+@keyframes crawl{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.actions{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--rule)}
+.btn{font-family:var(--f-cond);font-weight:600;letter-spacing:.14em;font-size:14px;background:transparent;color:var(--chalk);border:0;border-right:1px solid var(--rule);padding:14px 22px;cursor:pointer;text-transform:uppercase;display:flex;gap:10px;align-items:center}
+.btn kbd{font-family:var(--f-mono);font-size:10px;color:var(--chalk-2);border:1px solid var(--rule);padding:1px 5px}
+.btn:hover,.btn:focus-visible{background:var(--ink-3);outline:none}
+.btn.go{margin-left:auto;background:var(--vermil);color:#fff;border-right:0}
+.btn.go kbd{color:#fff;border-color:rgba(255,255,255,.45)}
+.btn.dark{background:var(--sumi);}
+
+/* ===== SCREEN 2: THE FILE (dossier) ===== */
+.file{
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.25 0 0 0 0 0.2 0 0 0 0 0.1 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background:var(--grain),linear-gradient(180deg,var(--paper),var(--paper-2));
+  color:var(--sumi);position:relative;padding:28px 32px 34px;
+  box-shadow:0 30px 60px -30px rgba(0,0,0,.8);
+}
+.file::before{content:"";position:absolute;left:0;top:0;bottom:0;width:22px;background:repeating-linear-gradient(180deg,transparent 0 26px,rgba(27,26,23,.18) 26px 27px);border-right:1px solid rgba(27,26,23,.15)}
+.file-in{padding-left:18px;display:grid;gap:26px}
+.file-head{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;border-bottom:2px solid var(--sumi);padding-bottom:12px}
+.file-head .ttl{font-family:var(--f-min);font-weight:800;font-size:34px;letter-spacing:.08em;line-height:1.1}
+.file-head .meta{font-family:var(--f-mono);font-size:11px;color:var(--sumi-2);margin-top:8px;letter-spacing:.06em;line-height:1.7}
+.stamp{font-family:var(--f-min);font-weight:800;color:var(--seal);border:3px solid var(--seal);padding:6px 14px;font-size:26px;letter-spacing:.3em;transform:rotate(-7deg);opacity:.85;mix-blend-mode:multiply;animation:press .55s cubic-bezier(.2,.9,.3,1.3) both;margin-top:4px;outline:1px solid var(--seal);outline-offset:3px}
+@keyframes press{from{transform:rotate(-7deg) scale(1.6)}to{transform:rotate(-7deg) scale(1)}}
+
+.cols{display:grid;grid-template-columns:1.35fr 1fr;gap:32px}
+.cols > *{min-width:0}
+.sec{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;color:var(--sumi-2);display:flex;gap:10px;align-items:baseline;margin-bottom:10px;text-transform:uppercase}
+.sec b{font-family:var(--f-min);font-size:17px;letter-spacing:.1em;color:var(--sumi);font-weight:700;text-transform:none}
+
+.roster{width:100%;font-size:13px}
+.roster th{font-family:var(--f-mono);font-weight:400;font-size:10px;letter-spacing:.1em;color:var(--sumi-2);text-align:left;border-bottom:1px solid var(--sumi);padding:6px 6px}
+.roster td{padding:9px 6px;border-bottom:1px solid rgba(27,26,23,.25);vertical-align:middle}
+.roster .who{font-family:var(--f-min);font-weight:700;font-size:15px}
+.roster .who small{display:block;font-family:var(--f-sans);font-size:11px;color:var(--sumi-2);font-weight:400}
+.roster .num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.redact{background:var(--sumi);color:transparent;user-select:none;padding:0 4px}
+.meter{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;width:80px}
+.meter i{height:8px;background:rgba(27,26,23,.15)}
+.meter i.on{background:var(--sumi)}
+.meter.low i.on{background:var(--seal)}
+.grade{font-family:var(--f-min);font-weight:800;font-size:18px}
+.note{font-size:11px;color:var(--seal);font-weight:500}
+
+.pursuer{display:grid;gap:14px}
+.pu{display:grid;grid-template-columns:1fr auto;gap:4px 12px;border-bottom:1px solid rgba(27,26,23,.25);padding-bottom:12px}
+.pu .n{font-family:var(--f-min);font-weight:700;font-size:15px}
+.pu .n small{font-family:var(--f-sans);font-weight:400;font-size:11px;color:var(--sumi-2);margin-left:8px}
+.pu .pct{font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums;text-align:right}
+.pu .bar{grid-column:1/-1;height:10px;background:rgba(27,26,23,.12);position:relative}
+.pu .bar i{position:absolute;inset:0 auto 0 0;background:var(--sumi)}
+.pu .bar::after{content:"";position:absolute;top:-3px;bottom:-3px;left:70%;width:1px;background:var(--seal)}
+.pu.alert .bar i{background:var(--seal)}
+.pu .next-act{grid-column:1/-1;font-size:12px;color:var(--sumi-2)}
+.pu.alert .next-act{color:var(--seal);font-weight:500}
+
+.ops{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.op{background:rgba(255,255,255,.28);border:1px solid rgba(27,26,23,.35);padding:14px 16px 16px;position:relative;display:grid;gap:8px;align-content:start}
+.op .id{font-family:var(--f-mono);font-size:11px;color:var(--sumi-2);display:flex;justify-content:space-between}
+.op .what{font-family:var(--f-min);font-weight:700;font-size:17px;line-height:1.35}
+.op dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:0;font-size:12px}
+.op dt{color:var(--sumi-2)}
+.op dd{margin:0;font-family:var(--f-mono);font-size:12px}
+.op .clip{position:absolute;top:-8px;right:18px;width:14px;height:30px;border:2px solid #6c6a63;border-bottom:0}
+.op.done{opacity:.72}
+.op.done .what{text-decoration:line-through;text-decoration-color:var(--seal);text-decoration-thickness:2px}
+
+.file-actions{display:flex;flex-wrap:wrap;gap:10px;border-top:2px solid var(--sumi);padding-top:16px}
+.fbtn{font-family:var(--f-min);font-weight:700;font-size:14px;letter-spacing:.1em;background:transparent;color:var(--sumi);border:1px solid var(--sumi);padding:10px 18px;cursor:pointer}
+.fbtn:hover,.fbtn:focus-visible{background:var(--sumi);color:var(--paper);outline:none}
+.fbtn.red{border-color:var(--seal);color:var(--seal)}
+.fbtn.red:hover,.fbtn.red:focus-visible{background:var(--seal);color:var(--paper)}
+
+/* ===== SCREEN 3: MATCH ===== */
+.match{background:#07080A;border:1px solid var(--rule);display:grid;grid-template-columns:1fr 360px;min-height:520px}
+.match > *{min-width:0}
+.pitch-area{position:relative;padding:20px;display:grid;grid-template-rows:auto 1fr auto;gap:16px}
+.bug{display:inline-flex;align-items:stretch;font-family:var(--f-cond);font-weight:600;letter-spacing:.06em;animation:wipe .7s cubic-bezier(.7,0,.2,1) both;clip-path:inset(0 0 0 0)}
+@keyframes wipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.bug .lg{background:var(--chalk);color:var(--ink);padding:6px 10px;font-size:13px;display:flex;align-items:center;font-weight:700}
+.bug .tm{background:var(--ink-3);padding:6px 14px;font-size:20px;display:flex;align-items:center;gap:10px}
+.bug .tm i{width:4px;height:18px;display:block}
+.bug .sc{background:var(--vermil);color:#fff;padding:6px 14px;font-size:22px;font-variant-numeric:tabular-nums;display:flex;align-items:center}
+.bug .clk{background:var(--ink);padding:6px 12px;font-size:20px;font-variant-numeric:tabular-nums;display:flex;align-items:center;border-left:1px solid var(--rule)}
+.bug .clk small{color:var(--vermil);margin-left:6px;font-size:13px}
+
+.pitch{position:relative;border:1px solid #1f2a22;background:
+  repeating-linear-gradient(90deg,#0d1510 0 8.33%,#0f1912 8.33% 16.66%);aspect-ratio:105/68;max-width:100%;width:100%;align-self:center}
+.pitch svg{position:absolute;inset:0;width:100%;height:100%}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.stats div{background:#07080A;padding:8px 10px;display:grid;gap:2px}
+.stats span{font-size:10px;color:var(--chalk-2);letter-spacing:.12em;font-family:var(--f-cond)}
+.stats b{font-family:var(--f-cond);font-weight:500;font-size:18px;font-variant-numeric:tabular-nums}
+
+.feed{border-left:1px solid var(--rule);display:grid;grid-template-rows:auto 1fr auto;background:var(--ink)}
+.feed .h{padding:14px 16px 0}
+.log{padding:0 16px;overflow:auto;display:flex;flex-direction:column-reverse;gap:0;font-size:13px;line-height:1.65;max-height:330px}
+.log p{margin:0;padding:8px 0;border-bottom:1px solid var(--rule);display:grid;grid-template-columns:34px 1fr;gap:8px}
+.log p em{font-style:normal;font-family:var(--f-cond);font-size:15px;color:var(--chalk-2);font-variant-numeric:tabular-nums}
+.log p.goal{color:#fff}
+.log p.goal em{color:var(--vermil)}
+.log p.dim{color:var(--chalk-2)}
+
+/* intervention: the paper slides over the broadcast */
+.cut{background:var(--paper);color:var(--sumi);padding:16px 16px 14px;border-top:3px solid var(--seal);display:grid;gap:10px;animation:slide .6s .25s cubic-bezier(.2,.8,.2,1) both}
+@keyframes slide{from{transform:translateY(14px)}to{transform:none}}
+.cut .q{font-family:var(--f-min);font-weight:700;font-size:15px;line-height:1.55}
+.cut .q span{font-family:var(--f-mono);font-size:11px;color:var(--seal);display:block;letter-spacing:.12em;margin-bottom:2px}
+.choice{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:1px solid var(--sumi);padding:9px 10px;background:transparent;color:var(--sumi);text-align:left;cursor:pointer;font-family:var(--f-sans);font-size:13px}
+.choice:hover,.choice:focus-visible{background:var(--sumi);color:var(--paper);outline:none}
+.choice kbd{font-family:var(--f-mono);font-size:11px;border:1px solid currentColor;padding:0 5px}
+.choice .cost{font-family:var(--f-mono);font-size:11px;color:var(--seal);white-space:nowrap}
+.choice:hover .cost,.choice:focus-visible .cost{color:#f0a49d}
+.timer{height:3px;background:rgba(27,26,23,.15);position:relative;overflow:hidden}
+.timer i{position:absolute;inset:0;background:var(--seal);transform-origin:left;animation:drain 12s linear infinite}
+@keyframes drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+
+@media (max-width:980px){
+  .bc-grid{grid-template-columns:1fr}
+  .cols{grid-template-columns:1fr}
+  .ops{grid-template-columns:1fr}
+  .match{grid-template-columns:1fr}
+  .feed{border-left:0;border-top:1px solid var(--rule)}
+}
+@media (max-width:560px){
+  .bc-top{grid-template-columns:1fr}
+  .crest{clip-path:none}
+  .wk{padding:10px 18px;border-top:1px solid var(--rule)}
+  .next .t{font-size:24px}
+  .facts{grid-template-columns:1fr 1fr}
+  .file{padding:22px 16px 24px}
+  .file-head{grid-template-columns:1fr}
+  .file-head .ttl{font-size:26px}
+  .stamp{justify-self:start}
+  .roster .hide-s{display:none}
+  .stats{grid-template-columns:1fr 1fr}
+  .btn{padding:12px 14px}
+  .btn.go{margin-left:0;width:100%;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important}
+}
+.scroll-x{overflow-x:auto}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <div class="logo"><span class="flag"></span>OFFSIDE</div>
+    <small>UI MOCK / REV 0.1 / 静止画・操作不可</small>
+  </header>
+
+  <!-- ============ 1 CLUBHOUSE ============ -->
+  <div>
+    <div class="label"><b>画面 1</b> クラブハウス / 表の顔</div>
+    <div class="bc">
+      <div class="bc-top">
+        <div class="crest">UH</div>
+        <div class="club">
+          <div class="n">UNION HALVA</div>
+          <div class="s">ユニオン・ハルヴァ ・ ヴァレスカ二部リーグ ・ 創立1907</div>
+        </div>
+        <div class="wk">SEASON 1 <span>WEEK</span><strong>07</strong><span>/ 12</span></div>
+      </div>
+
+      <div class="bc-grid">
+        <section>
+          <div class="h"><span>Next Match</span><span>第8節 ・ 土 19:30</span></div>
+          <div class="next">
+            <div class="t">HALVA<small>ホーム ・ ストラニク競技場</small></div>
+            <div class="vs">VS</div>
+            <div class="t r">SV ARDENA<small>2位 ・ 直近5試合 4勝1分</small></div>
+          </div>
+          <dl class="facts">
+            <div><dt>主審</dt><dd>J. メルト</dd></div>
+            <div><dt>予想勝率</dt><dd>31%</dd></div>
+            <div><dt>欠場</dt><dd class="hot">2名</dd></div>
+            <div><dt>チーム状態</dt><dd>やや低調</dd></div>
+            <div><dt>観客予想</dt><dd>8,400</dd></div>
+            <div><dt>賭け倍率</dt><dd>3.85</dd></div>
+          </dl>
+        </section>
+
+        <section>
+          <div class="h"><span>League II</span><span>上位2クラブ昇格</span></div>
+          <div class="scroll-x">
+          <table class="tbl">
+            <thead><tr><th>#</th><th>CLUB</th><th>試</th><th>差</th><th>点</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>FK VORNA</td><td>7</td><td>+9</td><td>17</td></tr>
+              <tr class="cut"><td>2</td><td>SV ARDENA</td><td>7</td><td>+7</td><td>16</td></tr>
+              <tr><td>3</td><td>DINAMO KESZ</td><td>7</td><td>+4</td><td>13</td></tr>
+              <tr class="me"><td>4</td><td>UNION HALVA</td><td>7</td><td>+2</td><td>12</td></tr>
+              <tr><td>5</td><td>OLIMP TRAVA</td><td>7</td><td>0</td><td>10</td></tr>
+              <tr><td>6</td><td>RAPID LUVAN</td><td>7</td><td>−1</td><td>9</td></tr>
+              <tr><td>7</td><td>AS MERIDEN</td><td>7</td><td>−6</td><td>6</td></tr>
+              <tr><td>8</td><td>ŽELEZNIK OST</td><td>7</td><td>−15</td><td>3</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </section>
+
+        <section class="money">
+          <div class="h"><span>Finance</span><span>単位 €</span></div>
+          <div class="row"><span class="k">運転資金(表)</span><span class="v">2.41M</span></div>
+          <div class="row"><span class="k">負債</span><span class="v neg">11.20M<small>返済期限 W10</small></span></div>
+          <div>
+            <svg class="spark" viewBox="0 0 200 44" preserveAspectRatio="none" aria-label="運転資金の推移(過去7週)">
+              <line x1="0" y1="43" x2="200" y2="43" stroke="#2E3238" stroke-width="1"/>
+              <polygon points="0,10 33,14 66,12 100,20 133,24 166,22 200,30 200,44 0,44" fill="rgba(236,234,228,.07)"/>
+              <polyline points="0,10 33,14 66,12 100,20 133,24 166,22 200,30" fill="none" stroke="#ECEAE4" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+              <rect x="196" y="26" width="7" height="7" fill="#D0342C"/>
+            </svg>
+          </div>
+          <div class="board">理事会の信任 <b>54</b> ・ サポーターの支持 <b>71</b><br>スポンサー:ヴァレスカ港湾公社(残り1年)</div>
+        </section>
+      </div>
+
+      <div class="ticker" aria-label="ニュース速報">
+        <div class="tag">NEWS</div>
+        <div class="run">
+          <span>ARDENA、主将コヴァチの右足首に違和感 今週は別メニュー</span>
+          <span>日刊ヴェスニク、二部クラブの資金の流れを特集へ</span>
+          <span>協会、第8節の審判割当を発表</span>
+          <span>ハルヴァ 新オーナー就任から7週 ファンは静観</span>
+          <span>ARDENA、主将コヴァチの右足首に違和感 今週は別メニュー</span>
+          <span>日刊ヴェスニク、二部クラブの資金の流れを特集へ</span>
+          <span>協会、第8節の審判割当を発表</span>
+          <span>ハルヴァ 新オーナー就任から7週 ファンは静観</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="b-squad"><kbd>1</kbd>選手</button>
+        <button class="btn" id="b-transfer"><kbd>2</kbd>移籍</button>
+        <button class="btn" id="b-money"><kbd>3</kbd>財政</button>
+        <button class="btn dark" id="b-file"><kbd>F</kbd>ファイルを開く</button>
+        <button class="btn go" id="b-advance"><kbd>SPACE</kbd>週を進める</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 2 THE FILE ============ -->
+  <div>
+    <div class="label"><b>画面 2</b> ファイル / 裏の帳簿</div>
+    <article class="file">
+      <div class="file-in">
+        <div class="file-head">
+          <div>
+            <div class="ttl">案件綴 第七週</div>
+            <div class="meta">FILE NO. 0417 ・ 保管者:オーナー本人 ・ 写し:なし<br>裏金残高 €384,000 ・ 前週比 −€52,000</div>
+          </div>
+          <div class="stamp">極秘</div>
+        </div>
+
+        <div class="cols">
+          <section>
+            <div class="sec"><b>手駒</b>Personnel ・ 5名</div>
+            <div class="scroll-x">
+            <table class="roster">
+              <thead><tr><th>氏名 / 役</th><th>腕</th><th>忠誠</th><th>口の堅さ</th><th class="hide-s">週額</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="who">オットー・ブラシュ<small>仲介人 ・ 審判・選手の窓口</small></td>
+                  <td class="grade">B</td>
+                  <td><div class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div></td>
+                  <td><div class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div></td>
+                  <td class="num hide-s">8,000</td>
+                </tr>
+                <tr>
+                  <td class="who">ミレナ・ヴォイク<small>元刑事 ・ 調査と監視</small></td>
+                  <td class="grade">A</td>
+                  <td><div class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div></td>
+                  <td><div class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></td>
+                  <td class="num hide-s">12,500</td>
+                </tr>
+                <tr>
+                  <td class="who">ラディム・セーケ<small>会計士 ・ 裏金の洗浄</small></td>
+                  <td class="grade">B+</td>
+                  <td><div class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div></td>
+                  <td><div class="meter low"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="note">酒量が増えている</span></td>
+                  <td class="num hide-s">6,000</td>
+                </tr>
+                <tr>
+                  <td class="who">“ゴーシュ”<small>運び屋 ・ 本名 <span class="redact">ドラガン・ミル</span></small></td>
+                  <td class="grade">C</td>
+                  <td><div class="meter low"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="note">報酬に不満</span></td>
+                  <td><div class="meter"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div></td>
+                  <td class="num hide-s">2,000</td>
+                </tr>
+                <tr>
+                  <td class="who">氏名不詳<small>掃除屋 ・ ブラシュを通してのみ連絡</small></td>
+                  <td class="grade">?</td>
+                  <td colspan="2" style="font-size:12px;color:var(--sumi-2)">直接の面識なし</td>
+                  <td class="num hide-s">都度</td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </section>
+
+          <section>
+            <div class="sec"><b>追及</b>Pursuers ・ 証拠が赤線を越えると動く</div>
+            <div class="pursuer">
+              <div class="pu alert">
+                <div class="n">ペトル・ハース<small>日刊ヴェスニク 調査報道部</small></div><div class="pct">58 / 100</div>
+                <div class="bar"><i style="width:58%"></i></div>
+                <div class="next-act">特集記事の準備中。情報源はクラブ内部とみられる</div>
+              </div>
+              <div class="pu">
+                <div class="n">アナ・クレル<small>首都検察 特捜部</small></div><div class="pct">34 / 100</div>
+                <div class="bar"><i style="width:34%"></i></div>
+                <div class="next-act">港湾公社の資金を別件で内偵中</div>
+              </div>
+              <div class="pu">
+                <div class="n">L. ドレフ<small>SV ARDENA オーナー</small></div><div class="pct">21 / 100</div>
+                <div class="bar"><i style="width:21%"></i></div>
+                <div class="next-act">こちらの動きに気づき始めた</div>
+              </div>
+              <div class="pu">
+                <div class="n">協会 倫理委員会<small>委員長 V. サボ</small></div><div class="pct">12 / 100</div>
+                <div class="bar"><i style="width:12%"></i></div>
+                <div class="next-act">動きなし</div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <section>
+          <div class="sec"><b>進行中の工作</b>Operations</div>
+          <div class="ops">
+            <div class="op">
+              <span class="clip"></span>
+              <div class="id"><span>OP-0412</span><span>実行 W08</span></div>
+              <div class="what">第8節主審 J. メルトへの「謝礼」</div>
+              <dl><dt>担当</dt><dd>ブラシュ</dd><dt>費用</dt><dd>€40,000 裏金</dd><dt>痕跡</dt><dd>小</dd><dt>効果</dt><dd>際どい判定1回</dd></dl>
+            </div>
+            <div class="op">
+              <div class="id"><span>OP-0413</span><span>残り 2週</span></div>
+              <div class="what">記者ハースの身辺と情報源を洗う</div>
+              <dl><dt>担当</dt><dd>ヴォイク</dd><dt>費用</dt><dd>€15,000 裏金</dd><dt>痕跡</dt><dd>なし</dd><dt>効果</dt><dd>弱み・情報源の特定</dd></dl>
+            </div>
+            <div class="op done">
+              <div class="id"><span>OP-0409</span><span>完了 W06</span></div>
+              <div class="what">ARDENA 主将コヴァチの練習場に細工</div>
+              <dl><dt>担当</dt><dd>ゴーシュ</dd><dt>費用</dt><dd>€3,000 裏金</dd><dt>痕跡</dt><dd>中 → ゴーシュ</dd><dt>結果</dt><dd>右足首 全治3週</dd></dl>
+            </div>
+          </div>
+        </section>
+
+        <div class="file-actions">
+          <button class="fbtn" id="f-new">新しい工作を命じる</button>
+          <button class="fbtn" id="f-hire">手駒を雇う</button>
+          <button class="fbtn" id="f-wash">裏金を動かす</button>
+          <button class="fbtn red" id="f-clean">口を封じる</button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ============ 3 MATCH ============ -->
+  <div>
+    <div class="label"><b>画面 3</b> 試合中継 / 要所の介入</div>
+    <div class="match">
+      <div class="pitch-area">
+        <div class="bug">
+          <span class="lg">L-II</span>
+          <span class="tm"><i style="background:#ECEAE4"></i>HAL</span>
+          <span class="sc">1 – 1</span>
+          <span class="tm">ARD<i style="background:#3C6FB0"></i></span>
+          <span class="clk">71:48</span>
+        </div>
+
+        <div class="pitch" role="img" aria-label="ピッチ図:ハルヴァの攻撃、ペナルティエリア内で接触">
+          <svg viewBox="0 0 105 68" preserveAspectRatio="xMidYMid meet">
+            <g fill="none" stroke="rgba(236,234,228,.22)" stroke-width=".3">
+              <rect x="1" y="1" width="103" height="66"/>
+              <line x1="52.5" y1="1" x2="52.5" y2="67"/>
+              <circle cx="52.5" cy="34" r="9.15"/>
+              <rect x="1" y="13.85" width="16.5" height="40.3"/>
+              <rect x="87.5" y="13.85" width="16.5" height="40.3"/>
+              <rect x="1" y="24.85" width="5.5" height="18.3"/>
+              <rect x="98.5" y="24.85" width="5.5" height="18.3"/>
+            </g>
+            <path d="M62 40 Q78 30 92 33" fill="none" stroke="rgba(208,52,44,.7)" stroke-width=".4" stroke-dasharray="1.2 1"/>
+            <g fill="#ECEAE4">
+              <circle cx="92" cy="33" r="1.3"/><circle cx="80" cy="22" r="1.1"/><circle cx="74" cy="45" r="1.1"/><circle cx="62" cy="40" r="1.1"/><circle cx="55" cy="25" r="1.1"/>
+            </g>
+            <g fill="#3C6FB0">
+              <circle cx="93.6" cy="34.4" r="1.3"/><circle cx="101" cy="34" r="1.1"/><circle cx="88" cy="27" r="1.1"/><circle cx="89" cy="41" r="1.1"/><circle cx="84" cy="34" r="1.1"/><circle cx="76" cy="30" r="1.1"/>
+            </g>
+            <circle cx="93" cy="33.6" r="3.4" fill="none" stroke="#D0342C" stroke-width=".35"/>
+            <rect x="96" y="20" width="1.4" height="1.4" fill="#C9A227"/>
+            <text x="98" y="19.6" font-size="2.2" fill="#C9A227" font-family="IBM Plex Mono, monospace">REF</text>
+          </svg>
+        </div>
+
+        <div class="stats">
+          <div><span>支配率</span><b>44 – 56</b></div>
+          <div><span>シュート</span><b>7 – 9</b></div>
+          <div><span>枠内</span><b>3 – 4</b></div>
+          <div><span>警告</span><b>2 – 1</b></div>
+        </div>
+      </div>
+
+      <aside class="feed">
+        <div class="h"><span>Live</span><span>実況 ・ R. カーニ</span></div>
+        <div class="log">
+          <p><em>71'</em><span>右からのクロスにペトロフが飛び込む。背後からARDENAのDFが体を入れた。倒れた。</span></p>
+          <p class="dim"><em>68'</em><span>ARDENA、コヴァチ不在の中盤がやや間延びしている。</span></p>
+          <p><em>63'</em><span>ハルヴァ交代。ドゥシェク out、若いイリッチ in。</span></p>
+          <p class="goal"><em>55'</em><span>ゴール、ARDENA。こぼれ球をボロスが押し込んで同点。</span></p>
+          <p class="goal"><em>22'</em><span>ゴール、ハルヴァ。ペトロフのミドルが左隅へ。</span></p>
+        </div>
+        <div class="cut">
+          <div class="q"><span>INTERVENTION ・ OP-0412 有効</span>主審メルトが笛をくわえたまま、こちらのベンチを見ている。</div>
+          <div class="timer"><i></i></div>
+          <button class="choice" id="c-1"><kbd>1</kbd><span>合図を送る(PK判定)</span><span class="cost">痕跡 +8</span></button>
+          <button class="choice" id="c-2"><kbd>2</kbd><span>見送る。謝礼は次節に回す</span><span class="cost">€0</span></button>
+          <button class="choice" id="c-3"><kbd>3</kbd><span>相手DFに退場も出させる</span><span class="cost">痕跡 +19</span></button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
